@@ -34,7 +34,26 @@ class DFA[STATE]:
             cur = self.d[(cur, ch)]
         # Dupa procesarea intregului cuvant, verificam daca starea curenta este una finala
         return cur in self.F
-    
+
+    # Cauta potrivirea oriunde in text (ca re.search), nu doar pe tot textul.
+    def search(self, text: str) -> bool:
+        # Try every start position; walk the DFA from there using the same
+        # transition table accept() uses. Return True as soon as a final
+        # state is reached — that is the first (leftmost, shortest) match.
+        for start in range(len(text) + 1):
+            cur = self.q0
+            if cur in self.F:
+                return True  # pattern matches the empty string
+            for ch in text[start:]:
+                # .get() covers both cases: no transition defined, and the
+                # None destination minimize() writes for undefined transitions.
+                nxt = self.d.get((cur, ch))
+                if nxt is None:
+                    break
+                cur = nxt
+                if cur in self.F:
+                    return True
+        return False
 
     def minimize(self) -> 'DFA[STATE]':
         # Algoritmul lui Hopcroft
