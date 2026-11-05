@@ -86,3 +86,13 @@ tests_2/        reference DFAs for regex → DFA
 ## Credits
 
 Developed as a project for the *Formal Languages and Automata* course at the Faculty of Automatic Control and Computers, Politehnica University of Bucharest (2025). The course team provided the class skeletons and the test suites. The parser, the Thompson construction, the subset construction and the minimization are my own work.
+
+## My Changes in This Fork
+
+Forked by Muhammad Ahmad Farooq from [NaxonRO/Regex-Engine-From-Scratch](https://github.com/NaxonRO/Regex-Engine-From-Scratch) (MIT). The original project — a regex engine built from scratch in pure Python (parser, Thompson NFA, subset construction, Hopcroft DFA minimization) — is by NaxonRO; all credit for it belongs to the original author.
+
+My change: the DFA can now search, not just match whole strings. I added a `search(text)` method to `src/DFA.py` that returns True when the pattern matches anywhere inside the text (like Python's `re.search`), while `accept()` still checks the whole string exactly as before. It walks the DFA from each start position using the same transition table as `accept()`, and handles the `None` destinations that `minimize()` writes for undefined transitions.
+
+I added `test/test_search.py` with 10 tests (match in the middle, at the start, at the end, no match, the minimized DFA, and an `accept()` regression check). The full test suite — the repo's own 62 tests plus these 10 — passes: 72 in total.
+
+What I learned: how a DFA runs step by step through its states, how Thompson construction and subset construction turn a regex into that DFA, and why a minimized DFA accepts the same language with fewer states.
